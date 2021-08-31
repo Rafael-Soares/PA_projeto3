@@ -45,7 +45,7 @@ public:
   // array id_in com valor invalido (0) e saida com UNDEF
   Port(unsigned NI=2);
   // Construtor por copia
-  Port(const Port& );
+  Port(const Port& P);
   // Destrutor virtual
   virtual ~Port();
 
@@ -73,6 +73,7 @@ public:
   // - validNumInputs eh true
   // - Todas as id de entrada da porta sao diferentes de zero.
   bool valid() const;
+//----------------feito até aqui--------------------------
 
   // Funcoes de consulta
 

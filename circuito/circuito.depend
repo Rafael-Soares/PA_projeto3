@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1628017834 source:c:\users\rafae\desktop\pa_projeto3\circuito\bool3s.cpp
+	<iostream>
+	"bool3S.h"
+
+1628017015 c:\users\rafae\desktop\pa_projeto3\circuito\bool3s.h
+	<iostream>
+
+1629767627 source:c:\users\rafae\desktop\pa_projeto3\circuito\circuito-main.cpp
+	<iostream>
+	<string>
+	"circuito.h"
+
+1630418898 c:\users\rafae\desktop\pa_projeto3\circuito\circuito.h
+	<iostream>
+	<string>
+	<vector>
+	"bool3S.h"
+
+1630419511 source:c:\users\rafae\desktop\pa_projeto3\circuito\circuito.cpp
+	<iostream>
+	"circuito.h"
+	"bool3S.h"
+
