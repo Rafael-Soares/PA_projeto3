@@ -73,7 +73,7 @@ public:
   // - validNumInputs eh true
   // - Todas as id de entrada da porta sao diferentes de zero.
   bool valid() const;
-//----------------feito até aqui--------------------------
+
 
   // Funcoes de consulta
 
@@ -93,7 +93,6 @@ public:
   // Fixa a origem do sinal da I-esima entrada da porta como sendo Id
   // Depois de testar os parametros (validIndex, Id!=0), faz: id_in[I] <- Id
   void setId_in(unsigned I, int Id);
-
   // Leh uma porta do teclado. O usuario deve digitar:
   // - o numero de entradas da porta; e
   // - a id de cada uma das entradas da porta
@@ -164,7 +163,7 @@ public:
   // (nao deve ser solicitado a digitar o numero de entradas, que eh sempre 1)
   // Se o usuario digitar um dado invalido, o metodo deve pedir que ele digite novamente
   void digitar();
-
+//----------------feito até aqui com execao da funcao imprimir--------------------------
   bool3S simular(const bool3S In[]);
 };
 
