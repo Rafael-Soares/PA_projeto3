@@ -163,7 +163,7 @@ public:
   // (nao deve ser solicitado a digitar o numero de entradas, que eh sempre 1)
   // Se o usuario digitar um dado invalido, o metodo deve pedir que ele digite novamente
   void digitar();
-//----------------feito até aqui com execao da funcao imprimir--------------------------
+
   bool3S simular(const bool3S In[]);
 };
 
@@ -298,7 +298,6 @@ public:
   // Depois de testar o parametro (validIdInput), retorna o valor de inputs[-IdInput - 1]
   // ou UNDEF se parametro invalido
   bool3S getInput(int IdInput) const;
-
   // Caracteristicas das saidas
   // Retorna a origem (a id) do sinal de saida cuja id eh IdOutput
   // Depois de testar o parametro (validIdOutput), retorna id_out[IdOutput-1]
@@ -312,6 +311,7 @@ public:
   // ou UNDEF se id==0 (invalido)
   bool3S getOutput(int IdOutput) const;
 
+
   // Caracteristicas das portas
   // Nome da porta: AN, NX, etc
   // Depois de testar o parametro (validIdPort) e se ports[..]!=nullptr,
@@ -324,7 +324,7 @@ public:
   // retorna ports[IdPort-1]->getNumInputs()
   // ou 0 se parametro invalido
   unsigned getNumInputsPort(int IdPort) const;
-
+//----------------------------------------------------feito até aqui-------------------------------------------------------------
   // Retorna a origem (a id) da I-esima entrada da porta cuja id eh IdPort
   // Depois de testar os parametros (validIdPort) e se ports[..]!=nullptr,
   // retorna ports[IdPort-1]->getId_in(I)
@@ -353,6 +353,7 @@ public:
   // Depois de testar os parametros (validIdOutput,validIdOrig),
   // faz: id_out[IdOut-1] <- IdOrig
   void setIdOutput(int IdOut, int IdOrig);
+//----------------------------------------------------feito até aqui-------------------------------------------------------------
 
   // E/S de dados
 
