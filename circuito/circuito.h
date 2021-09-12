@@ -170,6 +170,7 @@ public:
 class Port_AND: public Port {
 public:
   Port_AND();
+
   ptr_Port clone() const;
   std::string getName() const;
 
@@ -179,6 +180,7 @@ public:
 class Port_NAND: public Port {
 public:
   Port_NAND();
+
   ptr_Port clone() const;
   std::string getName() const;
 
@@ -188,6 +190,7 @@ public:
 class Port_OR: public Port {
 public:
   Port_OR();
+
   ptr_Port clone() const;
   std::string getName() const;
 
@@ -197,6 +200,7 @@ public:
 class Port_NOR: public Port {
 public:
   Port_NOR();
+
   ptr_Port clone() const;
   std::string getName() const;
 
@@ -206,6 +210,7 @@ public:
 class Port_XOR: public Port {
 public:
   Port_XOR();
+
   ptr_Port clone() const;
   std::string getName() const;
 
@@ -215,6 +220,7 @@ public:
 class Port_NXOR: public Port {
 public:
   Port_NXOR();
+
   ptr_Port clone() const;
   std::string getName() const;
 

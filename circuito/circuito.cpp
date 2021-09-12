@@ -24,6 +24,8 @@ Port::Port(const Port& P)
     }
     saida = P.saida;
 }
+Port::~Port(){}
+
 ///Funcoes de testagem
 bool Port::validNumInputs(unsigned NI) const
 {
@@ -135,6 +137,7 @@ std::ostream& operator<<(std::ostream& O, const Port& X)
 ///Classe Port_NOT
 //construtor
 Port_NOT::Port_NOT(): Port(1){}
+
 //clone
 ptr_Port Port_NOT::clone() const
 {
@@ -463,6 +466,45 @@ void Circuit::setIdOutput(int IdOut, int IdOrig)
     {
         id_out[IdOut-1] = IdOrig;
     }
+}
+
+bool Circuit::simular(const std::vector<bool3S>& Inputs)
+{
+    bool tudo_def,algum_def;
+    bool3S in[NUM_MAX_INPUTS_PORT];
+    int id;
+    for (int i = 0;i < (getNumPorts()-1); i++)
+    {
+     porta[i].saida = bool3s::UNDEF;
+    }
+    do
+    {
+        tudo_def = 1;
+        algum_def = 0;
+        for (int i = 0;i < (getNumPorts()-1); i++)
+        {
+            if(porta[i].saida == bool3s::UNDEF)
+            {
+                    for (int j = 0;j < (getNumInputs()-1); j++)
+                    {
+                        id = porta[i].id_in[j];
+                        if(id>0)
+                            in[j] = porta[id-1].saida;
+                        else
+                            in[j] = inputs_circ[-id-1];
+
+                    }
+                    porta[i].simular[in];
+
+                    if(porta[i].saida == bool3s::UNDEF)
+                        tudo_def = 0;
+                    else
+                        algum_def = 1;
+            }
+
+        }
+
+    }while(!tudo_def && algum_def);
 }
 
 
