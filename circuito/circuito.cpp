@@ -3,7 +3,7 @@
 #include "bool3S.h"
 
 using namespace std;
-///------------------------------------------------------------classe port-----------------------------------------------
+///------------------------------------------------------------class port-----------------------------------------------
 ///Classe Port
 //Construtor
 Port::Port(unsigned NI): Nin(NI), saida(bool3S::UNDEF)
@@ -304,7 +304,7 @@ bool3S Port_NXOR::simular(const bool3S In[])
     }
     return ~saida;
 }
-///------------------------------------------------------classe circuito----------------------------------------------
+///------------------------------------------------------class circuit----------------------------------------------
 
 //construtor
 Circuit::Circuit(): inputs(), id_out(), ports() {}
@@ -468,47 +468,131 @@ void Circuit::setIdOutput(int IdOut, int IdOrig)
     }
 }
 
+void Circuit::digitar()
+{
+    ///variaveis auxiliares
+    unsigned NI, NO, NP;
+    string tipo;
+    do
+    {
+     cout<<"Digite os numeros de entrada, saida e de portas do circuito, respectivamente: ";
+     cin>>NI>>NO>>NP;
+     if ((NI==0 || NI<0) || (NO==0 || NO<0) || (NP==0 || NP<0)) cout<< "Voce digitou algum dado invalido(n igual a 0 ou menor que 0)\n";
+    } while((NI==0 || NI<0) || (NO==0 || NO<0) || (NP==0 || NP<0));
+
+    resize(NI, NO, NP);
+    for(unsigned i=0; i<getNumPorts();i++)
+    {
+        do
+        {
+            cout<<"Digite o tipo da porta: ";
+            cin>>tipo;
+            if(!namePortValid(tipo)) cout<<"Voce digitou um tipo de porta invalido, redigite:\n";
+        }while(!namePortValid(tipo));
+        ports[i] = PortAloca(tipo);
+        ports[i]->digitar();
+    }
+    for(unsigned i=0;i<getNumOutputs();i++)
+    {
+        cout<<"Digite as ids das portas de saída:";
+        do
+        {
+            cin>>id_out[i];
+            if(!validIdOutput(id_out[i])) cout<<"Voce digitou uma id invalida, repita\n";
+
+        }while(!validIdOutput(id_out[i]));
+    }
+}
+
+bool Circuit::ler(const std::string& arq)
+{
+    ifstream ARQUIVO(arq.c_str());
+    if (!arq.is_open()) {return false;}
+    string cabecalho, portas, saidas;
+    unsigned NI, NO, NP;
+
+    ARQUIVO>>cabecalho;
+    ARQUIVO>>NI>>NO>>NP;
+    if(cabecalho!="CIRCUITO:")
+    {
+        ARQUIVO.close();
+        return false;
+    }else if((NI==0 || NI<0) || (NO==0 || NO<0) || (NP==0 || NP<0))
+    {
+        ARQUIVO.close();
+        return false;
+    }
+    clear();
+    resize(NI, NO, NP);
+///falta essa continuação
+    return true;
+}
+
+std::ostream& Circuit::imprimir(std::ostream& O=std::cout) const
+{
+    if(!valid()) return;
+    O<<"CIRCUITO: "<<getNumInputs()<<" "<<getNumOutputs()<<" "<<getNumPorts()<<endl;
+    O<<"PORTAS:"<<endl;
+    //imprime as portas
+    for(unsigned i=0; i<getNumPorts(); i++)
+    {
+        O<<i+1<<")"<<getNamePort(int(i+1))<<" "<<getNumInputsPort(int(i+1))<<": ";
+        for(unsigned j=0; j<getNumInputsPort(int(j+1)); i++){O<<inputs[j];}
+    }
+    O<<endl;
+    //imprime as saidas
+    O<<"PORTAS:"<<endl;
+    for(unsigned i=0; i<getNumOutputs(); i++)
+    {
+        O<<i+1<<")"<<" "<<getIdOutput(int(i+1))<<endl;
+    }
+    return O;
+}
+
+bool Circuit::salvar(const std::string& arq) const
+{
+    ofstream ARQUIVO(arq.c_str());
+    if (!arq.is_open()) return false;
+    ARQUIVO<<imprimir();
+    return true;
+}
+
 bool Circuit::simular(const std::vector<bool3S>& Inputs)
 {
-    bool tudo_def,algum_def;
+    bool tudo_def, algum_def;
     bool3S in[NUM_MAX_INPUTS_PORT];
     int id;
-    for (int i = 0;i < (getNumPorts()-1); i++)
+    for (unsigned i = 0;i <getNumPorts(); i++)
     {
-     porta[i].saida = bool3s::UNDEF;
+     ports[i].saida = bool3S::UNDEF;
     }
     do
     {
-        tudo_def = 1;
-        algum_def = 0;
-        for (int i = 0;i < (getNumPorts()-1); i++)
+        tudo_def = true;
+        algum_def = false;
+        for (unsigned i = 0;i <getNumPorts(); i++)
         {
-            if(porta[i].saida == bool3s::UNDEF)
+            if(ports[i]. == bool3S::UNDEF)
             {
-                    for (int j = 0;j < (getNumInputs()-1); j++)
+                    for (unsigned j = 0; j < ports[i].Nin; j++)
                     {
-                        id = porta[i].id_in[j];
+                        id = ports[i].id_in[j];
                         if(id>0)
-                            in[j] = porta[id-1].saida;
+                            in[j] = ports[id-1].saida;
                         else
-                            in[j] = inputs_circ[-id-1];
+                            in[j] = Inputs[-id-1];
 
                     }
-                    porta[i].simular[in];
+                    ports[i].simular[in];
 
-                    if(porta[i].saida == bool3s::UNDEF)
-                        tudo_def = 0;
+                    if(ports[i].saida == bool3S::UNDEF)
+                        tudo_def = false;
                     else
-                        algum_def = 1;
+                        algum_def = true;
             }
 
         }
 
     }while(!tudo_def && algum_def);
+    return true;
 }
-
-
-
-
-
-

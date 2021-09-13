@@ -330,7 +330,6 @@ public:
   // retorna ports[IdPort-1]->getNumInputs()
   // ou 0 se parametro invalido
   unsigned getNumInputsPort(int IdPort) const;
-//----------------------------------------------------feito até aqui-------------------------------------------------------------
   // Retorna a origem (a id) da I-esima entrada da porta cuja id eh IdPort
   // Depois de testar os parametros (validIdPort) e se ports[..]!=nullptr,
   // retorna ports[IdPort-1]->getId_in(I)
@@ -359,7 +358,6 @@ public:
   // Depois de testar os parametros (validIdOutput,validIdOrig),
   // faz: id_out[IdOut-1] <- IdOrig
   void setIdOutput(int IdOut, int IdOrig);
-//----------------------------------------------------feito até aqui-------------------------------------------------------------
 
   // E/S de dados
 
