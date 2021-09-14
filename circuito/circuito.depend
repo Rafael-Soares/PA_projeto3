@@ -17,8 +17,11 @@
 	<vector>
 	"bool3S.h"
 
-1631491482 source:c:\users\rafae\desktop\pa_projeto3\circuito\circuito.cpp
+1631587512 source:c:\users\rafae\desktop\pa_projeto3\circuito\circuito.cpp
 	<iostream>
+	<fstream>
+	<cmath>
+	<limits>
 	"circuito.h"
 	"bool3S.h"
 

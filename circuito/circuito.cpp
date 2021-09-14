@@ -136,7 +136,7 @@ std::ostream& operator<<(std::ostream& O, const Port& X)
     (&X)->imprimir(O);
     return O;
 }
-///---------------------------------------------------implementacao das portas logicas------------------------------------
+///---------------------------------------------------implementation of ports bools------------------------------------
 ///Classe Port_NOT
 //construtor
 Port_NOT::Port_NOT(): Port(1){}
@@ -480,8 +480,8 @@ void Circuit::digitar()
     {
      cout<<"Digite os numeros de entrada, saida e de portas do circuito, respectivamente: ";
      cin>>NI>>NO>>NP;
-     if ((NI==0 || NI<0) || (NO==0 || NO<0) || (NP==0 || NP<0)) cout<< "Voce digitou algum dado invalido(n igual a 0 ou menor que 0)\n";
-    } while((NI==0 || NI<0) || (NO==0 || NO<0) || (NP==0 || NP<0));
+     if (NI<=0 || NO<=0 || NP<=0) cout<< "Voce digitou algum dado invalido(n igual a 0 ou menor que 0)\n";
+    } while(NI<=0 || NO<=0 || NP<=0);
 
     resize(NI, NO, NP);
     for(unsigned i=0; i<getNumPorts();i++)
@@ -511,8 +511,10 @@ bool Circuit::ler(const std::string& arq)
 {
     std::ifstream ARQUIVO(arq.c_str());
     if (!ARQUIVO.is_open()) {return false;}
-    string cabecalho, portas, saidas;
-    unsigned NI, NO, NP;
+    //var auxs
+    string cabecalho, portas, saidas, tipo;
+    int NI, NO, NP;
+    int Id, QuanPortas;
 
     ARQUIVO>>cabecalho;
     ARQUIVO>>NI>>NO>>NP;
@@ -520,14 +522,63 @@ bool Circuit::ler(const std::string& arq)
     {
         ARQUIVO.close();
         return false;
-    }else if((NI==0 || NI<0) || (NO==0 || NO<0) || (NP==0 || NP<0))
+    }else if((NI<=0) || (NO<=0) || (NP<=0))
     {
         ARQUIVO.close();
         return false;
     }
     clear();
     resize(NI, NO, NP);
-///falta essa continuação
+    //parte das portas
+    ARQUIVO>>portas;
+    if(portas!="PORTAS:")
+    {
+        clear();
+        ARQUIVO.close();
+        return false;
+    }
+    for(unsigned i=0; i<getNumPorts();i++)
+    {
+        ARQUIVO>>Id>>tipo>>QuanPortas;
+        if(tipo=="NT" && QuanPortas!=1)
+        {
+            clear();
+            ARQUIVO.close();
+            return false;
+        } else if((!validIdPort(Id)) || (!namePortValid(tipo)) || (QuanPortas<2 || QuanPortas>4))
+        {
+            clear();
+            ARQUIVO.close();
+            return false;
+        }
+        ports[i] = PortAloca(tipo);
+        ports[i]->setNumInputs(QuanPortas);
+        for(unsigned j=0; j<ports[i]->getNumInputs(); j++)
+        {
+            ARQUIVO>>Id;
+            ports[j]->setId_in(j,Id);
+        }
+    }
+
+    //parte das saidas
+    ARQUIVO>>saidas;
+    if(saidas!="SAIDAS:")
+    {
+        clear();
+        ARQUIVO.close();
+        return false;
+    }
+    for(unsigned i=0; i<getNumOutputs();i++)
+    {
+        ARQUIVO>>Id;
+        if(!validIdOutput(Id))
+        {
+            clear();
+            ARQUIVO.close();
+            return false;
+        }
+        setIdOutput(i,Id);
+    }
     return true;
 }
 
