@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <cmath>
+#include <limits>
 #include "circuito.h"
 #include "bool3S.h"
 
@@ -506,8 +509,8 @@ void Circuit::digitar()
 
 bool Circuit::ler(const std::string& arq)
 {
-    ifstream ARQUIVO(arq.c_str());
-    if (!arq.is_open()) {return false;}
+    std::ifstream ARQUIVO(arq.c_str());
+    if (!ARQUIVO.is_open()) {return false;}
     string cabecalho, portas, saidas;
     unsigned NI, NO, NP;
 
@@ -528,9 +531,9 @@ bool Circuit::ler(const std::string& arq)
     return true;
 }
 
-std::ostream& Circuit::imprimir(std::ostream& O=std::cout) const
+std::ostream& Circuit::imprimir(std::ostream& O) const
 {
-    if(!valid()) return;
+    if(!valid()) return O;
     O<<"CIRCUITO: "<<getNumInputs()<<" "<<getNumOutputs()<<" "<<getNumPorts()<<endl;
     O<<"PORTAS:"<<endl;
     //imprime as portas
@@ -551,9 +554,9 @@ std::ostream& Circuit::imprimir(std::ostream& O=std::cout) const
 
 bool Circuit::salvar(const std::string& arq) const
 {
-    ofstream ARQUIVO(arq.c_str());
-    if (!arq.is_open()) return false;
-    ARQUIVO<<imprimir();
+    std::ofstream ARQUIVO(arq.c_str());
+    if (!ARQUIVO.is_open()) return false;
+    imprimir(ARQUIVO);
     return true;
 }
 
@@ -564,7 +567,7 @@ bool Circuit::simular(const std::vector<bool3S>& Inputs)
     int id;
     for (unsigned i = 0;i <getNumPorts(); i++)
     {
-     ports[i].saida = bool3S::UNDEF;
+     ports[i]->setOutput(bool3S::UNDEF);
     }
     do
     {
@@ -572,20 +575,20 @@ bool Circuit::simular(const std::vector<bool3S>& Inputs)
         algum_def = false;
         for (unsigned i = 0;i <getNumPorts(); i++)
         {
-            if(ports[i]. == bool3S::UNDEF)
+            if(ports[i]->getOutput() == bool3S::UNDEF)
             {
-                    for (unsigned j = 0; j < ports[i].Nin; j++)
+                    for (unsigned j = 0; j < ports[i]->getNumInputs(); j++)
                     {
-                        id = ports[i].id_in[j];
+                        id = ports[i]->getId_in(j);
                         if(id>0)
-                            in[j] = ports[id-1].saida;
+                            in[j] = ports[id-1]->getOutput();
                         else
-                            in[j] = Inputs[-id-1];
+                            in[j] = inputs[-id-1];
 
                     }
-                    ports[i].simular[in];
+                    ports[i]->simular(in);
 
-                    if(ports[i].saida == bool3S::UNDEF)
+                    if(ports[i]->getOutput() == bool3S::UNDEF)
                         tudo_def = false;
                     else
                         algum_def = true;
