@@ -501,9 +501,9 @@ void Circuit::digitar()
         do
         {
             cin>>id_out[i];
-            if(!validIdOutput(id_out[i])) cout<<"Voce digitou uma id invalida, repita\n";
+            if(id_out[i]==0) cout<<"Voce digitou uma id invalida, repita\n";
 
-        }while(!validIdOutput(id_out[i]));
+        }while(id_out[i]==0);
     }
 }
 
@@ -512,19 +512,22 @@ bool Circuit::ler(const std::string& arq)
     std::ifstream ARQUIVO(arq.c_str());
     if (!ARQUIVO.is_open()) {return false;}
     //var auxs
-    string cabecalho, portas, saidas, tipo;
+    string cabecalho, portas, saidas, tipo, lixo;
     int NI, NO, NP;
-    int Id, QuanPortas;
+    int Id, QuanPortas, indice_saida;
 
     ARQUIVO>>cabecalho;
     ARQUIVO>>NI>>NO>>NP;
+    cout<<cabecalho<<endl;
     if(cabecalho!="CIRCUITO:")
     {
         ARQUIVO.close();
+        cout<<"debug1"<<endl;
         return false;
     }else if((NI<=0) || (NO<=0) || (NP<=0))
     {
         ARQUIVO.close();
+        cout<<"debug2"<<endl;
         return false;
     }
     clear();
@@ -535,67 +538,82 @@ bool Circuit::ler(const std::string& arq)
     {
         clear();
         ARQUIVO.close();
+        cout<<"debug3"<<endl;
         return false;
     }
     for(unsigned i=0; i<getNumPorts();i++)
     {
-        ARQUIVO>>Id>>tipo>>QuanPortas;
+        ARQUIVO>>Id>>lixo>>tipo>>QuanPortas>>lixo;
+        //cout<<Id<<" "<<tipo<<" "<<QuanPortas<<endl;
+
         if(tipo=="NT" && QuanPortas!=1)
         {
             clear();
             ARQUIVO.close();
+            cout<<"debug4"<<endl;
             return false;
         } else if((!validIdPort(Id)) || (!namePortValid(tipo)) || (QuanPortas<2 || QuanPortas>4))
         {
             clear();
             ARQUIVO.close();
+            cout<<"debug5"<<endl;
             return false;
         }
         ports[i] = PortAloca(tipo);
+
         ports[i]->setNumInputs(QuanPortas);
+
         for(unsigned j=0; j<ports[i]->getNumInputs(); j++)
         {
+
             ARQUIVO>>Id;
-            ports[j]->setId_in(j,Id);
+            ports[i]->setId_in(j,Id);
+            cout<<*ports[j]<<endl;
+
         }
     }
 
-    //parte das saidas
+   //parte das saidas
     ARQUIVO>>saidas;
     if(saidas!="SAIDAS:")
     {
         clear();
         ARQUIVO.close();
+        cout<<"debug6"<<endl;
         return false;
     }
     for(unsigned i=0; i<getNumOutputs();i++)
     {
-        ARQUIVO>>Id;
-        if(!validIdOutput(Id))
+        ARQUIVO>>Id>>lixo>>indice_saida;
+        if(!validIdOutput(Id) || indice_saida==0)
         {
             clear();
             ARQUIVO.close();
+            cout<<"debug7"<<endl;
             return false;
         }
-        setIdOutput(i,Id);
+        setIdOutput(Id, indice_saida);
     }
+
     return true;
 }
 
 std::ostream& Circuit::imprimir(std::ostream& O) const
 {
-    //if(!valid()) return O;
+    if(!valid()) return O;
     O<<"CIRCUITO: "<<getNumInputs()<<" "<<getNumOutputs()<<" "<<getNumPorts()<<endl;
+
     O<<"PORTAS:"<<endl;
     //imprime as portas
     for(unsigned i=0; i<getNumPorts(); i++)
     {
-        O<<i+1<<")"<<getNamePort(int(i+1))<<" "<<getNumInputsPort(int(i+1))<<": ";
-        for(unsigned j=0; j<getNumInputsPort(int(j+1)); i++){O<<inputs[j];}
+        O<<i+1<<") "<<getNamePort(int(i+1))<<" "<<getNumInputsPort(int(i+1))<<": ";
+        for(unsigned j=0; j<getNumInputsPort(int(i+1)); j++){O<<getId_inPort(i+1, j)<<" ";}
+        O<<endl;
     }
     O<<endl;
     //imprime as saidas
-    O<<"PORTAS:"<<endl;
+    O<<"SAIDAS:"<<endl;
     for(unsigned i=0; i<getNumOutputs(); i++)
     {
         O<<i+1<<")"<<" "<<getIdOutput(int(i+1))<<endl;
