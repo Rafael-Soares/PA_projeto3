@@ -85,15 +85,15 @@ void Port::setId_in(unsigned I, int Id)
 
     } while(!validNumInputs(Nin));
 
-    cout<<"Digite o id's de entrada";
+    cout<<"Digite as id's de entrada: ";
     for(int i=0; i<int(Nin); i++)
     {
 
         do
         {
         cin>>id_in[i];
-        if(!valid()){cout<<"Voce digitou uma id invalida, digite outra.\n";}
-        }while(!valid());
+        if(id_in[i]==0){cout<<"Voce digitou uma id invalida, digite outra.\n";}
+        }while(id_in[i]==0);
 
     }
  }
@@ -157,7 +157,6 @@ bool Port_NOT::validNumInputs(unsigned NI) const{ return NI==1;}
 void Port_NOT::digitar()
 {
     Nin=1;
-    cout<<"Digite o id de entrada";
     do
     {
         cout<<"Digite o id de entrada: ";
@@ -495,9 +494,10 @@ void Circuit::digitar()
         ports[i] = PortAloca(tipo);
         ports[i]->digitar();
     }
+    cout<<"Digite as ids das portas de saida:";
     for(unsigned i=0;i<getNumOutputs();i++)
     {
-        cout<<"Digite as ids das portas de saída:";
+
         do
         {
             cin>>id_out[i];
@@ -584,7 +584,7 @@ bool Circuit::ler(const std::string& arq)
 
 std::ostream& Circuit::imprimir(std::ostream& O) const
 {
-    if(!valid()) return O;
+    //if(!valid()) return O;
     O<<"CIRCUITO: "<<getNumInputs()<<" "<<getNumOutputs()<<" "<<getNumPorts()<<endl;
     O<<"PORTAS:"<<endl;
     //imprime as portas
@@ -634,7 +634,7 @@ bool Circuit::simular(const std::vector<bool3S>& Inputs)
                         if(id>0)
                             in[j] = ports[id-1]->getOutput();
                         else
-                            in[j] = inputs[-id-1];
+                            in[j] = Inputs[-id-1];
 
                     }
                     ports[i]->simular(in);
